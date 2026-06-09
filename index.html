@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Skelly Software LLC</title>
+  <meta name="description" content="Skelly Software builds tools for licensed cannabis dispensary pharmacists. AllotBot! automates CT PMP allotment verification at the point of sale." />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue:       #2f6fed;
+      --blue-dark:  #1448c0;
+      --blue-faint: #eef2ff;
+      --ink:        #1a1f2e;
+      --mid:        #4a5568;
+      --muted:      #8a94a6;
+      --border:     #e2e8f0;
+      --bg:         #f7f8fc;
+      --white:      #ffffff;
+      --red:        #e53e3e;
+      --mono:       'SF Mono', 'Fira Code', 'Consolas', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Nav ── */
+    nav {
+      position: sticky;
+      top: 0;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 40px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 100;
+    }
+
+    .nav-logo {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--ink);
+      letter-spacing: -0.01em;
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--blue); }
+
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--mid);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .nav-links a:hover { color: var(--blue); }
+
+    /* ── Hero ── */
+    .hero {
+      padding: 100px 40px 80px;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--blue);
+      background: var(--blue-faint);
+      padding: 4px 10px;
+      border-radius: 20px;
+      margin-bottom: 24px;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: var(--blue);
+      border-radius: 50%;
+    }
+
+    .hero h1 {
+      font-size: clamp(36px, 5vw, 52px);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      color: var(--ink);
+      margin-bottom: 20px;
+    }
+    .hero h1 em {
+      font-style: normal;
+      color: var(--blue);
+    }
+
+    .hero-sub {
+      font-size: 18px;
+      color: var(--mid);
+      line-height: 1.6;
+      max-width: 560px;
+      margin-bottom: 36px;
+    }
+
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--blue);
+      color: var(--white);
+      font-size: 14px;
+      font-weight: 600;
+      padding: 12px 24px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+    .hero-cta:hover { background: var(--blue-dark); }
+
+    /* ── Product Section ── */
+    .section {
+      padding: 80px 40px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 12px;
+    }
+
+    .section h2 {
+      font-size: clamp(24px, 3vw, 32px);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      margin-bottom: 16px;
+    }
+
+    .section-intro {
+      font-size: 16px;
+      color: var(--mid);
+      max-width: 600px;
+      margin-bottom: 48px;
+      line-height: 1.7;
+    }
+
+    /* Product card */
+    .product-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+    }
+
+    .product-card-content {
+      padding: 40px;
+      border-right: 1px solid var(--border);
+    }
+
+    .product-name {
+      font-size: 28px;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      margin-bottom: 6px;
+    }
+    .product-name .allot { color: var(--ink); }
+    .product-name .bot   { color: var(--blue); }
+    .product-name .bang  { color: var(--red); }
+
+    .product-tagline {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 24px;
+      font-weight: 500;
+    }
+
+    .product-desc {
+      font-size: 14px;
+      color: var(--mid);
+      line-height: 1.7;
+      margin-bottom: 28px;
+    }
+
+    .feature-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .feature-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--mid);
+    }
+    .feature-list li::before {
+      content: '✓';
+      color: var(--blue);
+      font-weight: 700;
+      font-size: 12px;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    .product-card-meta {
+      padding: 40px;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .meta-item-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .meta-item-value {
+      font-size: 13px;
+      color: var(--ink);
+      font-weight: 500;
+    }
+    .meta-item-value code {
+      font-family: var(--mono);
+      font-size: 12px;
+      background: var(--blue-faint);
+      color: var(--blue);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    /* ── Divider ── */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    /* ── About ── */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      margin-top: 0;
+    }
+
+    .about-block h3 {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 10px;
+    }
+    .about-block p {
+      font-size: 14px;
+      color: var(--mid);
+      line-height: 1.7;
+    }
+
+    /* ── Contact ── */
+    .contact-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 32px;
+    }
+    .contact-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--ink);
+      text-decoration: none;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .contact-pill:hover { border-color: var(--blue); color: var(--blue); }
+    .contact-pill svg { flex-shrink: 0; }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 24px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 900px;
+      margin: 40px auto 0;
+    }
+    .footer-left {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .footer-right {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 680px) {
+      nav { padding: 0 20px; }
+      .nav-links { display: none; }
+      .hero { padding: 60px 20px 48px; }
+      .section { padding: 48px 20px; }
+      .product-card { grid-template-columns: 1fr; }
+      .product-card-content { border-right: none; border-bottom: 1px solid var(--border); }
+      .about-grid { grid-template-columns: 1fr; gap: 24px; }
+      footer { flex-direction: column; gap: 8px; text-align: center; padding: 20px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="#" class="nav-logo">Skelly <span>Software</span></a>
+    <ul class="nav-links">
+      <li><a href="#product">Product</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-eyebrow">Connecticut · Cannabis Compliance</div>
+    <h1>Compliance tools for <em>cannabis dispensaries.</em></h1>
+    <p class="hero-sub">Skelly Software builds operational compliance software for cannabis dispensary staff — starting with AllotBot!, a Chrome extension that verifies patient allotments against the CT PMP in real time.</p>
+    <a href="#contact" class="hero-cta">
+      Get in touch
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+  </section>
+
+  <div class="divider"></div>
+
+  <section class="section" id="product">
+    <div class="section-label">Product</div>
+    <h2>AllotBot!</h2>
+    <p class="section-intro">A Chrome extension side panel that sits alongside your dispensary POS. One click verifies a patient's remaining MMP allotment against the Connecticut PMP — without leaving the patient profile, without slowing down the transaction.</p>
+
+    <div class="product-card">
+      <div class="product-card-content">
+        <div class="product-name">
+          <span class="allot">ALLOT</span><span class="bot">BOT</span><span class="bang">!</span>
+        </div>
+        <div class="product-tagline">CT PMP Allotment Verification · Chrome Extension</div>
+        <p class="product-desc">AllotBot! integrates with Connecticut's prescription monitoring program to calculate a patient's internal and external dispensations, remaining allotment, and 30-day window dates — displayed instantly in the browser alongside the dispensary workflow.</p>
+        <ul class="feature-list">
+          <li>Instant allotment calculation — internal vs. external breakdown</li>
+          <li>Estimated cycle date with confidence rating</li>
+          <li>Physician's Instructions lookup via CT Biznet</li>
+          <li>One-click allotment sync to Dutchie POS profile</li>
+          <li>Stateless — zero patient data stored, ever</li>
+          <li>Licensed per dispensary location</li>
+        </ul>
+      </div>
+      <div class="product-card-meta">
+        <div>
+          <div class="meta-item-label">Platform</div>
+          <div class="meta-item-value">Google Chrome Extension</div>
+        </div>
+        <div>
+          <div class="meta-item-label">POS Compatibility</div>
+          <div class="meta-item-value">Dutchie · more coming soon</div>
+        </div>
+        <div>
+          <div class="meta-item-label">Compliance</div>
+          <div class="meta-item-value">HIPAA-aware · Stateless architecture · No PHI stored</div>
+        </div>
+        <div>
+          <div class="meta-item-label">Status</div>
+          <div class="meta-item-value"><code>Active beta · CT</code></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section class="section" id="about">
+    <div class="section-label">About</div>
+    <h2>Built by a pharmacist, for the whole team.</h2>
+    <p class="section-intro">Skelly Software was founded by a licensed pharmacist and Medical Program Manager with nearly a decade of experience in Connecticut's regulated cannabis industry.</p>
+    <div class="about-grid">
+      <div class="about-block">
+        <h3>Why we exist</h3>
+        <p>Cannabis dispensaries need compliance tools that work for everyone on the floor. We build software that reduces manual overhead, catches errors at the point of sale, and keeps teams operating within regulatory requirements without slowing them down.</p>
+      </div>
+      <div class="about-block">
+        <h3>Where we're headed</h3>
+        <p>AllotBot! is actively deployed at Fine Fettle dispensaries across Connecticut. We're expanding to additional dispensary chains and building new tools to address the compliance and operational gaps that dispensary staff face every shift.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section class="section" id="contact">
+    <div class="section-label">Contact</div>
+    <h2>Get in touch.</h2>
+    <p class="section-intro">For licensing, partnership inquiries, or integration questions — reach out directly.</p>
+    <div class="contact-row">
+      <a href="mailto:shane@skellysoftware.com" class="contact-pill">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M2 4h12v9H2V4z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M2 4l6 5 6-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        shane@skellysoftware.com
+      </a>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-left">© 2026 Skelly Software LLC · Glastonbury, CT</div>
+    <div class="footer-right">skellysoftware.com</div>
+  </footer>
+
+</body>
+</html>
